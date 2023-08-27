@@ -32,7 +32,7 @@ type locals struct {
 type function struct {
 	typeIdx uint32
 	locals  []locals
-	body    expr
+	body    []instr
 }
 
 type table struct {

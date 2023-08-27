@@ -429,7 +429,8 @@ func (p *parser) codeSection(fs []function) error {
 
 	for i := uint32(0); i < count; i++ {
 		// func size
-		_, err := p.r.eatU32()
+		funcSize, err := p.r.eatU32()
+		funcEnd := p.r.pos + int(funcSize)
 		if err != nil {
 			return err
 		}
@@ -450,7 +451,18 @@ func (p *parser) codeSection(fs []function) error {
 			}
 			fs[i].locals[j].valType = type_(valType)
 		}
-		fs[i].body, err = p.expr()
+
+		fs[i].body = []instr{}
+		for {
+			instr, _, err := p.instr()
+			if err != nil {
+				return err
+			}
+			fs[i].body = append(fs[i].body, instr)
+			if p.r.pos >= funcEnd {
+				break
+			}
+		}
 		if err != nil {
 			return err
 		}

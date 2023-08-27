@@ -25,6 +25,8 @@ func (o *opUnreachable) exec(frameStack *stack[frame], valueStack *stack[Value],
 type opNop struct{}
 
 func (o *opNop) exec(frameStack *stack[frame], valueStack *stack[Value], store *store) error {
+	frame, _ := frameStack.Top()
+	frame.NextStep()
 	return nil
 }
 
@@ -102,7 +104,7 @@ func (o *opElse) exec(frameStack *stack[frame], valueStack *stack[Value], store 
 	if !ok {
 		return fmt.Errorf("no label found when else instr")
 	}
-	frame.pc = label.endPc
+	frame.pc = label.endPc + 1
 	return nil
 }
 
@@ -116,7 +118,7 @@ func (o *opEnd) exec(frameStack *stack[frame], valueStack *stack[Value], store *
 		frameStack.Pop()
 	} else {
 		// end label
-		frame.pc = label.endPc
+		frame.pc = label.endPc + 1
 	}
 	// TODO: restore stack
 	return nil

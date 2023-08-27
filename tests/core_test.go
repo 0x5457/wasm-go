@@ -2,7 +2,6 @@ package tests
 
 import (
 	"encoding/json"
-	"fmt"
 	"math"
 	"os"
 	"path"
@@ -43,7 +42,7 @@ func runTest(t *testing.T, jsonPath string) {
 	dir, _ := filepath.Split(jsonPath)
 	var i wasm_go.Interpreter
 	for _, cmd := range config.Commands {
-		fmt.Println(cmd.Line)
+		t.Log(cmd.Line)
 		switch cmd.Type {
 		case "module":
 			wasm, err := os.ReadFile(path.Join(dir, cmd.Filename))
